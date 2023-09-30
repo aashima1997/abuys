@@ -54,6 +54,7 @@ dependencies:
   geolocator: ^7.7.0
   permission_handler: ^8.3.0
   geocoding: ^2.0.1
+  flutter_launcher_icons: ^0.9.0
 
 
 

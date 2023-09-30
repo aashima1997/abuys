@@ -64,7 +64,7 @@ class prodWidget extends StatelessWidget {
                       Padding(padding: EdgeInsets.all(15)),
                       Container(
                         margin: EdgeInsets.all(10),
-                     child: Expanded(child:Column(
+                     child: Container(child:Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment:CrossAxisAlignment.center,
                           children:[  const Text("MP",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25,color: Colors.blue)),
