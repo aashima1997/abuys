@@ -17,7 +17,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        fontFamily: "ff",
+        primaryColor: const Color(0x0ff3288BA),
+        accentColor: const Color(0x0ff3288BA)
       ),
       home:  LoginPage()
     );

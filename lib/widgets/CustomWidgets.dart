@@ -40,68 +40,67 @@ errordialog(dialogContext, String title, String description) {
 }
 
 class prodWidget extends StatelessWidget {
-  const prodWidget({
-    Key? key,
-    required this.product,
-  }) : super(key: key);
+  const prodWidget({Key? key,required this.product,required this.addr}) : super(key: key);
 
   final ProductResponsse product;
+ final String addr;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
         padding: const EdgeInsets.all(5),
-        child:Card(
+        child:
+        Column(children:[
+          AutoSizeText("${product.Product_Name},$addr",style: const TextStyle(fontSize: 18,fontWeight:FontWeight.bold,color: Color(0xff3288ba))),
+          Card(
           shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(5)),
             color: Colors.white,
             elevation: 10,
             shadowColor: Colors.white,
-            child: Column(children:[Padding(padding: EdgeInsets.all(0)) ,
-              AutoSizeText(product.Product_Name.toString(),style: TextStyle(fontSize: 30,color: Colors.blue)),
+            child: Column(children:[const Padding(padding: EdgeInsets.all(0)) ,
               Row(
-                   // mainAxisAlignment: MainAxisAlignment.start,
                     children:[
-                      Padding(padding: EdgeInsets.all(15)),
+                      const Padding(padding: EdgeInsets.all(12)),
                       Container(
-                        margin: EdgeInsets.all(10),
-                     child: Container(child:Column(
+                        margin: const EdgeInsets.all(12),
+                     child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment:CrossAxisAlignment.center,
-                          children:[  const Text("MP",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25,color: Colors.blue)),
-                            AutoSizeText("Qty: "+product.Market_Qty.toString(),style: TextStyle(fontSize: 20)),
-                            AutoSizeText("${product.Market_Price}/${product.Kg_Ltr}",style: TextStyle(fontSize: 20)),
-                            AutoSizeText(product.Total_Market_Price.toString(),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color:Colors.blue)),
-                          ]),
-                     )),
-                      Container(height: 80, child: const VerticalDivider(color: Colors.black,thickness: 2,)),
+                          children:[  const Text("MP",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color: Color(0xff3288ba))),
+                            Text("(₹ ${product.Market_Price}per${product.Kg_Ltr})",style: const TextStyle(fontSize: 10)),
+                            AutoSizeText("30.00Kg".toString(),style: TextStyle(fontSize: 15,color:Colors.grey.shade500)),
+                            AutoSizeText("₹ ${product.Total_Selling_Price}",style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color:Color(0x0ff3288BA))),
+                          ])),
+                      const SizedBox(height: 80, child: VerticalDivider(color: Colors.black,thickness: 2,)),
                       Container(
-                          margin: EdgeInsets.all(10),
+                          margin: const EdgeInsets.all(12),
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment:CrossAxisAlignment.center,
-                              children:[  const Text("SP",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25,color: Colors.blue)),
-                                AutoSizeText("Qty: "+product.Selling_Qty.toString(),style: TextStyle(fontSize: 20)),
-                                AutoSizeText("${product.Selling_Price}/${product.Kg_Ltr}",style: TextStyle(fontSize: 20)),
-                                AutoSizeText(product.Total_Selling_Price.toString(),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color:Colors.blue)),
+                              children:[  const Text("SP",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color: Color(0xff3288ba))),
+                                Text("(₹ ${product.Selling_Price}per${product.Kg_Ltr})",style: const TextStyle(fontSize: 10)),
+                                AutoSizeText("30.00Kg".toString(),style: TextStyle(fontSize: 15,color:Colors.grey.shade500)),
+                                Text("₹ ${product.Total_Selling_Price}",style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color:Color(0x0ff3288BA))),
 
                               ])),
         Container(
-            margin: EdgeInsets.all(10),
+            margin: const EdgeInsets.all(12),
             child:
                       Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment:CrossAxisAlignment.center,
                           children:[
-                            Image.network(imagePrefix+product.Product_Image,
-                              width: 100,height: 100,
-                            )]),
+                            ClipRRect(borderRadius:BorderRadius.circular(8.0),child: Image.network(imagePrefix+product.Product_Image,
+                              width: 100,height: 80,
+                            ))]),
 
         ),]
             ),
               SizedBox(width: 300,
              child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.blue, // background
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  primary: const Color(0x0ff004E7F), // background//005583
                   onPrimary: Colors.white, // foreground
                 ),
                 child: const Text('Buy'),
@@ -113,7 +112,7 @@ class prodWidget extends StatelessWidget {
                                   details: product)
                       ));
                   },)
-              )])));
+              )]))]));
   }
 }
 class TryAgainButton extends StatelessWidget {

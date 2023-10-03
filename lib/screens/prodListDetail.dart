@@ -34,12 +34,12 @@ var toast=ApiScreenHelper();
                    title:  const Text(
                     "Product Details",
                     style: TextStyle(
-                        color: Colors.black,
+                        color: Color(0x0ff3288BA),
                         fontSize: 20.0,
                         fontWeight: FontWeight.w700),
                   ),
                   iconTheme: const IconThemeData(color: Colors.black),
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Colors.blue.shade100,
                 ),
                 body:
                         Column(
@@ -52,13 +52,13 @@ var toast=ApiScreenHelper();
                               Container(
                                 margin: const EdgeInsets.all(10),
                                 height:40,width: 200,decoration: BoxDecoration(
-                                  color: Colors.blue,
+                                  color: const Color(0x0ff004E7F),
                                   borderRadius: BorderRadius.circular(10)
                               ),
                             child: Row(
                                mainAxisAlignment: MainAxisAlignment.center,
                                children: [
-                       const Text("Add to Cart:   ",style: TextStyle(color: Colors.black),),
+                       const Text("Add to Cart:   ",style: TextStyle(color: Colors.white),),
                                InkWell(
                                    onTap:(){
                                      setState((){
@@ -68,7 +68,7 @@ var toast=ApiScreenHelper();
                                        }
                                      });
                                    } ,
-                                   child:const Icon(Icons.remove,color:Colors.black)
+                                   child:const Icon(Icons.remove,color:Colors.white)
                                ),  Text("   $count   ",style: const TextStyle(color: Colors.white),
                                ),
                                InkWell(
@@ -78,7 +78,7 @@ var toast=ApiScreenHelper();
                                        totPrice=(count.toDouble()*widget.details.Selling_Price);
                                      });
                                    } ,
-                                   child:const Icon(Icons.add,color:Colors.black)
+                                   child:const Icon(Icons.add,color:Colors.white)
                                ),
                              ],),),
                               Container(
@@ -104,7 +104,8 @@ var toast=ApiScreenHelper();
 
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                        primary: Colors.blue, // background
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                        primary: Color(0x0ff004E7F), // background//005583
                                         onPrimary: Colors.white, // foreground
                                       ),
                                       child: const Text('Proceed'),

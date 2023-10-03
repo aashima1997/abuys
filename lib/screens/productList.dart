@@ -12,7 +12,8 @@ import '../widgets/CustomWidgets.dart';
 
 class ProductListPage extends StatefulWidget {
   String addr;
-  ProductListPage( this.addr, {Key? key}) : super(key: key);
+      double lat,long;
+  ProductListPage( this.addr, this.lat, this.long, {Key? key}) : super(key: key);
 
     @override
   State<ProductListPage> createState() => _ProductListPageState();
@@ -23,14 +24,18 @@ class _ProductListPageState extends State<ProductListPage> {
   late Future<List<ProductResponsse>> prodDownload;
 late Future<List<ListResponse>> catogDownload;
 late Future<List<SubCatResponse>>subCatogDownload;
+List<ProductResponsse>? prodList;
   final TextEditingController _searchController = TextEditingController();
     String _keyword = "";
 
 
   String addr="";
+  double? lat,long;
   @override
   void initState() {
-    prodDownload=ApiScreenHelper.getProd();
+    lat=widget.lat;
+    long=widget.long;
+    prodDownload=ApiScreenHelper.getProd(lat!, long!);
     catogDownload=ApiScreenHelper.getcatog(context);
     subCatogDownload=ApiScreenHelper.getProdbysubCateg(context,"1");
     addr=widget.addr;
@@ -53,7 +58,7 @@ late Future<List<SubCatResponse>>subCatogDownload;
                 appBar: AppBar(
                   leading:Image.asset("images/abuysicon.png"),
                   actions:<Widget>[
-                    IconButton(onPressed:(){}, icon: const Icon(Icons.notifications,color:Colors.blue) ),
+                    IconButton(onPressed:(){}, icon: const Icon(Icons.notifications,color:Color(0x0ff3288BA)) ),
                     IconButton(onPressed:(){
                       Navigator.of(context).push(
                           MaterialPageRoute(
@@ -61,7 +66,7 @@ late Future<List<SubCatResponse>>subCatogDownload;
                                   LoginPage()
                           ));
 
-                    }, icon: const Icon(Icons.logout,color:Colors.blue) )
+                    }, icon:  Icon(Icons.logout,color:Color(0x0ff3288BA)) )
 
                   ],
                   surfaceTintColor: Colors.white,
@@ -69,8 +74,8 @@ late Future<List<SubCatResponse>>subCatogDownload;
                   title:  const Text(
                     "Buyer",
                     style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 40.0,
+                        color: Color(0x0ff3288BA),
+                        fontSize: 30,
                         fontWeight: FontWeight.w700),
                   ),
                   iconTheme: const IconThemeData(color: Colors.white),
@@ -109,15 +114,18 @@ late Future<List<SubCatResponse>>subCatogDownload;
                       Row(
                        children: [
                        Expanded(child: TextField(decoration: InputDecoration(
-                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)
-                           ),filled: true,
-                         hintText: "Category",
+                         border: const OutlineInputBorder(),
+                         enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),borderSide: const BorderSide(color:Colors.white)
+                         ),filled: true,
                          fillColor: Colors.blue.shade100,
                          hintStyle: const TextStyle(
                            color:Colors.black
-                         ),
-                         prefixIcon: const Icon(Icons.filter_list,color: Colors.black,)
-                       ),
+                         ),labelText: "Category",
+                         prefixIcon: const Icon(Icons.list,color: Color(0x0ff3288BA),),
+                  suffixIcon: const Icon(Icons.arrow_forward_ios_sharp ,color: Color(0x0ff3288BA),),
+
+                  ),
+
                          onTap: (){
                            bottomSheetShow(context,snapshot.data[1]);
                            },
@@ -127,16 +135,19 @@ late Future<List<SubCatResponse>>subCatogDownload;
                          const SizedBox(width: 5,height: 5,),
 
                          Expanded(child: TextField(decoration: InputDecoration(
-                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)
+                           border: const OutlineInputBorder(),
+                             enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),borderSide: const BorderSide(color:Colors.white)
                              ),filled: true,
-                             hintText: "Sub-Category",
                              fillColor: Colors.blue.shade100,
 
                              hintStyle: const TextStyle(
                                  color:Colors.black
                              ),
-                             prefixIcon: const Icon(Icons.filter_list,color: Colors.black,)
+                             labelText: "SubCategory",
+                             prefixIcon: const Icon(Icons.list,color: Color(0xff3288ba),),
+                           suffixIcon: const Icon(Icons.arrow_forward_ios_sharp ,color: Colors.black,),
                          ),
+
                            onTap: (){
                              bottomSheetsubShow(context,snapshot.data[2]);
                            },
@@ -148,9 +159,9 @@ late Future<List<SubCatResponse>>subCatogDownload;
 
                        ],
                       ),
-                        Row(children: [IconButton(onPressed:(){}, icon: const Icon(Icons.location_on,color:Colors.blue) ),
+                        Row(children: [IconButton(onPressed:(){}, icon: const Icon(Icons.location_on,color:Color(0xff3288ba)) ),
 
-                          AutoSizeText(addr,style:const TextStyle(fontSize: 20,color:Colors.blue,),maxLines: 2,)]),
+                          AutoSizeText(addr,style:const TextStyle(fontSize: 18,color:Colors.black,),maxLines: 2,)]),
                   Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: TextField(
@@ -158,11 +169,11 @@ late Future<List<SubCatResponse>>subCatogDownload;
                       decoration: InputDecoration(
                         hintText: 'Search...',hoverColor: Colors.blue,
                   suffixIcon: IconButton(
-                    icon: Icon(Icons.clear,color: Colors.blue,),
+                    icon: const Icon(Icons.clear,color: Color(0xff3288ba),),
                     onPressed: () => _searchController.clear(),
                   ),
                         prefixIcon: IconButton(
-                          icon: Icon(Icons.search,color: Colors.blue,),
+                          icon: const Icon(Icons.search,color: Color(0xff3288ba),),
                           onPressed: () {
 
                           },
@@ -176,6 +187,7 @@ late Future<List<SubCatResponse>>subCatogDownload;
                   _keyword = text;
                   });
                   })),
+
                         Expanded(child:ListView.builder(
 
                         padding: const EdgeInsets.all(5),
@@ -192,7 +204,8 @@ late Future<List<SubCatResponse>>subCatogDownload;
                                             ListDetailScreen(
                                                 details: product)
                                     )),
-                              child:prodWidget(product: product));
+                              child:
+                                 prodWidget(product: product,addr:addr));
                             },
                       ))]);
                     }

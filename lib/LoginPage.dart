@@ -1,3 +1,4 @@
+import 'package:abuys/homePage.dart';
 import 'package:abuys/screens/productList.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -46,8 +47,8 @@ class _LoginPageState extends State<LoginPage>  {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("abuys"),
-        backgroundColor: Colors.blue,
+        title: const Text("abuys",style: TextStyle(color: Color(0x0ff3288BA)),),
+        backgroundColor:Colors.blue.shade100,
       ),
       body: Center(
         child: Column(mainAxisAlignment: MainAxisAlignment.center,
@@ -59,7 +60,7 @@ class _LoginPageState extends State<LoginPage>  {
                 child: const Text(
                   'Hey Hi,Hope you are doing Great!',
                   style: TextStyle(
-                      color: Colors.blue,
+                      color: Color(0x0ff3288BA),
                       fontWeight: FontWeight.w500,
                       fontSize: 30),
                 )),
@@ -73,6 +74,7 @@ class _LoginPageState extends State<LoginPage>  {
             Container(
               padding: const EdgeInsets.all(10),
               child: TextField(
+                style:TextStyle(color: const Color(0x0ff3288BA)),
                 controller: nameController,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
@@ -83,6 +85,7 @@ class _LoginPageState extends State<LoginPage>  {
             Container(
               padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
               child: TextField(
+                style: TextStyle(color:const Color(0x0ff3288BA)),
                 obscureText: true,
                 controller: passwordController,
                 decoration: const InputDecoration(
@@ -96,6 +99,11 @@ class _LoginPageState extends State<LoginPage>  {
                 padding: const EdgeInsets.all(10),
                 height: 60,
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    primary: Color(0x0ff004E7F), // background//005583
+                    onPrimary: Colors.white, // foreground
+                  ),
                   child: const Text('Login'),
                   onPressed: () {
                     print(nameController.text);
@@ -130,6 +138,6 @@ class _LoginPageState extends State<LoginPage>  {
       List<Placemark> placemark=await placemarkFromCoordinates(lat!, long!);
      addr= placemark.reversed.last.locality! +","+placemark.reversed.last.subLocality!+","+ placemark.reversed.last.country!;
       Navigator.push(
-          context, MaterialPageRoute(builder: (_) => ProductListPage(addr)));
+          context, MaterialPageRoute(builder: (_) => HomePage(addr,lat!,long!)));
     }
   }}

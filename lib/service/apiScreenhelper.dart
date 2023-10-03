@@ -8,12 +8,14 @@ import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 
 class ApiScreenHelper {
-  static Future<List<ProductResponsse>> getProd() async {
+  static Future<List<ProductResponsse>> getProd(double lat,double long) async {
     var listRes = http.Client();
+    String lattoString=lat.toString();
+    String longtoString=long.toString();
     var data;
     try {
-      var url = Uri.parse("https://abuysweb.coderzbot.com/api/get_product.php?buyer_id=94&latitude=8.198163&longitude=77.3041314&category_id=&sub_category_id=&search_key=");
-
+      var url = Uri.parse("https://abuysweb.coderzbot.com/api/get_product.php?buyer_id=94&latitude=$lattoString&longitude=$longtoString&category_id=&sub_category_id=&search_key=");
+print("url"+url.toString());
       var response = await listRes.get(url);
       if (response.statusCode == 200) {
         data = jsonDecode(response.body);
@@ -22,7 +24,6 @@ class ApiScreenHelper {
     } catch (e) {
       print(e);
     }
-
     return data.map<ProductResponsse>((e) => ProductResponsse.fromJson(e)).toList();
   }
 
