@@ -14,7 +14,7 @@ class ApiScreenHelper {
     String longtoString=long.toString();
     var data;
     try {
-      var url = Uri.parse("https://abuysweb.coderzbot.com/api/get_product.php?buyer_id=94&latitude=8.1989163&longitude=77.3041314&category_id=$catid&sub_category_id=$subcatId&search_key=");
+      var url = Uri.parse("https://abuysweb.coderzbot.com/api/get_product.php?buyer_id=94&latitude=$lattoString&longitude=$longtoString&category_id=$catid&sub_category_id=$subcatId&search_key=");
 print("url"+url.toString());
       var response = await listRes.get(url);
       if (response.statusCode == 200) {
