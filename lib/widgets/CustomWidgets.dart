@@ -51,7 +51,6 @@ class prodWidget extends StatelessWidget {
         padding: const EdgeInsets.all(5),
         child:
         Column(children:[
-          AutoSizeText("${product.Product_Name},$addr",style: const TextStyle(fontSize: 18,fontWeight:FontWeight.bold,color: Color(0xff3288ba))),
           Card(
           shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(5)),
             color: Colors.white,
@@ -66,10 +65,10 @@ class prodWidget extends StatelessWidget {
                      child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment:CrossAxisAlignment.center,
-                          children:[  const Text("MP",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color: Color(0xff3288ba))),
+                          children:[  const Text("MP",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16,color: Color(0xff3288ba))),
                             Text("(₹ ${product.Market_Price}per${product.Kg_Ltr})",style: const TextStyle(fontSize: 10)),
                             AutoSizeText("30.00Kg".toString(),style: TextStyle(fontSize: 15,color:Colors.grey.shade500)),
-                            AutoSizeText("₹ ${product.Total_Selling_Price}",style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color:Color(0x0ff3288BA))),
+                            AutoSizeText("₹ ${product.Total_Market_Price}",style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 16,color:Color(0x0ff3288BA))),
                           ])),
                       const SizedBox(height: 80, child: VerticalDivider(color: Colors.black,thickness: 2,)),
                       Container(
@@ -77,10 +76,12 @@ class prodWidget extends StatelessWidget {
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment:CrossAxisAlignment.center,
-                              children:[  const Text("SP",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color: Color(0xff3288ba))),
+                              children:[  const Text("SP",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16,color: Color(0xff3288ba))),
                                 Text("(₹ ${product.Selling_Price}per${product.Kg_Ltr})",style: const TextStyle(fontSize: 10)),
-                                AutoSizeText("30.00Kg".toString(),style: TextStyle(fontSize: 15,color:Colors.grey.shade500)),
-                                Text("₹ ${product.Total_Selling_Price}",style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color:Color(0x0ff3288BA))),
+                                AutoSizeText("30.00Kg".toString(),style: TextStyle(fontSize: 15
+
+                                    ,color:Colors.grey.shade500)),
+                                Text("₹ ${product.Total_Selling_Price}",style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 16,color:Color(0x0ff3288BA))),
 
                               ])),
         Container(

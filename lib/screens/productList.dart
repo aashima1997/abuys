@@ -24,10 +24,14 @@ class _ProductListPageState extends State<ProductListPage> {
   late Future<List<ProductResponsse>> prodDownload;
 late Future<List<ListResponse>> catogDownload;
 late Future<List<SubCatResponse>>subCatogDownload;
-List<ProductResponsse>? prodList;
-  final TextEditingController _searchController = TextEditingController();
-    String _keyword = "";
+List<ProductResponsse>? searchprodlist=[];
+  List<ProductResponsse>? listProduct=[];
+FocusNode focusNode=FocusNode();
+  FocusNode focusNode1=FocusNode();
 
+  final TextEditingController _searchController = TextEditingController();
+    String searchkeywrd = "";
+bool isSearch= false;
 
   String addr="";
   double? lat,long;
@@ -35,7 +39,7 @@ List<ProductResponsse>? prodList;
   void initState() {
     lat=widget.lat;
     long=widget.long;
-    prodDownload=ApiScreenHelper.getProd(lat!, long!);
+    prodDownload=ApiScreenHelper.getProd(lat!, long!,"","");
     catogDownload=ApiScreenHelper.getcatog(context);
     subCatogDownload=ApiScreenHelper.getProdbysubCateg(context,"1");
     addr=widget.addr;
@@ -81,138 +85,219 @@ List<ProductResponsse>? prodList;
                   iconTheme: const IconThemeData(color: Colors.white),
                   backgroundColor: Colors.blue.shade100,
                 ),
-                body: FutureBuilder<List>(
-                future: Future.wait([prodDownload,catogDownload,subCatogDownload]),
-                builder: (context, AsyncSnapshot snapshot) {
-                  if (snapshot.connectionState ==
-                      ConnectionState.waiting) {
-                    return Center(
-        child: Lottie.asset(
-      "images/load1.json",
-        ));
-                  }
-                  else if (snapshot.data == null) {
-                    return TryAgainButton(
-                      onPressed: () {
-                        setState(() {});
-                        },
-                    );
-                  } else {
-                    if (snapshot.data!.isEmpty) {
-                      return Column(
-                        children: const [
-                          Text(
-                            "No Data Found",
-                            style: TextStyle(
-                                fontSize: 17, fontStyle: FontStyle.italic),
-                          )
-                        ],
-                      );
-                    } else {
-                      return Column(children:[
-                        const Padding(padding: EdgeInsets.all(5)),
-                      Row(
-                       children: [
-                       Expanded(child: TextField(decoration: InputDecoration(
-                         border: const OutlineInputBorder(),
-                         enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),borderSide: const BorderSide(color:Colors.white)
-                         ),filled: true,
-                         fillColor: Colors.blue.shade100,
-                         hintStyle: const TextStyle(
-                           color:Colors.black
-                         ),labelText: "Category",
-                         prefixIcon: const Icon(Icons.list,color: Color(0x0ff3288BA),),
-                  suffixIcon: const Icon(Icons.arrow_forward_ios_sharp ,color: Color(0x0ff3288BA),),
-
-                  ),
-
-                         onTap: (){
-                           bottomSheetShow(context,snapshot.data[1]);
-                           },
-                         readOnly: true,
-                       )
-                       ),
-                         const SizedBox(width: 5,height: 5,),
-
-                         Expanded(child: TextField(decoration: InputDecoration(
-                           border: const OutlineInputBorder(),
-                             enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),borderSide: const BorderSide(color:Colors.white)
-                             ),filled: true,
-                             fillColor: Colors.blue.shade100,
-
-                             hintStyle: const TextStyle(
-                                 color:Colors.black
-                             ),
-                             labelText: "SubCategory",
-                             prefixIcon: const Icon(Icons.list,color: Color(0xff3288ba),),
-                           suffixIcon: const Icon(Icons.arrow_forward_ios_sharp ,color: Colors.black,),
-                         ),
-
-                           onTap: (){
-                             bottomSheetsubShow(context,snapshot.data[2]);
-                           },
-                           readOnly: true,
-                         )
-                         ),
-
-                         const SizedBox(width: 10,),
-
-                       ],
-                      ),
-                        Row(children: [IconButton(onPressed:(){}, icon: const Icon(Icons.location_on,color:Color(0xff3288ba)) ),
-
-                          AutoSizeText(addr,style:const TextStyle(fontSize: 18,color:Colors.black,),maxLines: 2,)]),
-                  Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: TextField(
-                      controller: _searchController,
-                      decoration: InputDecoration(
-                        hintText: 'Search...',hoverColor: Colors.blue,
-                  suffixIcon: IconButton(
-                    icon: const Icon(Icons.clear,color: Color(0xff3288ba),),
-                    onPressed: () => _searchController.clear(),
-                  ),
-                        prefixIcon: IconButton(
-                          icon: const Icon(Icons.search,color: Color(0xff3288ba),),
-                          onPressed: () {
-
-                          },
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                      ),
-                  onChanged: (text) {
-                  setState(() {
-                  _keyword = text;
-                  });
-                  })),
-
-                        Expanded(child:ListView.builder(
-
-                        padding: const EdgeInsets.all(5),
-                         // shrinkWrap: true,
-                        //  physics: const BouncingScrollPhysics(),
-                          itemCount: snapshot.data![0].length ,
-                          itemBuilder: (BuildContext ctx, int index) {
-                            final product = snapshot.data
-                            ![0][index];
-                            return GestureDetector(
-                                onTap: () => Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            ListDetailScreen(
-                                                details: product)
-                                    )),
-                              child:
-                                 prodWidget(product: product,addr:addr));
-                            },
-                      ))]);
-                    }
-                  }
-                }))
+                body:isSearch ? listSearhProd() : listProducts())
     );}
+  Widget listSearhProd(){
+//    _searchController.text=searchkeywrd;
+    focusNode.requestFocus();
+    _searchController.value=TextEditingValue(text: searchkeywrd,selection: TextSelection.collapsed(offset: searchkeywrd.length));
+    return Column(children:[
+      const Padding(padding: EdgeInsets.all(5)),
+      Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: TextField(
+            focusNode: focusNode,
+             controller: _searchController,
+              decoration: InputDecoration(
+                hintText: 'Search...',hoverColor: Colors.blue,
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.clear,color: Color(0xff3288ba),),
+                  onPressed: () => _searchController.clear(),
+                ),
+                prefixIcon: IconButton(
+                  icon: const Icon(Icons.search,color: Color(0xff3288ba),),
+                  onPressed: () {
 
+                  },
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+              ),
+              onChanged: (keyword) {
+                if(keyword.isEmpty){
+                  isSearch=false;
+                  setState(() {
+                  });
+                }
+                searchkeywrd=keyword;
+                searchprodlist = listProduct!.where((product) => product.Product_Name.toLowerCase().contains(keyword)).toList();
+                setState(() {
+                });
+             })),
+
+      Expanded(child:ListView.builder(
+
+        padding: const EdgeInsets.all(5),
+        // shrinkWrap: true,
+        //  physics: const BouncingScrollPhysics(),
+        itemCount: searchprodlist!.length ,
+        itemBuilder: (BuildContext ctx, int index) {
+          final product = searchprodlist![index];
+          return GestureDetector(
+              onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          ListDetailScreen(
+                              details: product)
+                  )),
+              child:
+              prodWidget(product: product,addr:addr));
+        },
+      ))]);
+  }
+Widget listProducts(){
+   // focusNode1.requestFocus();
+    return FutureBuilder<List>(
+        future: Future.wait([prodDownload,catogDownload,subCatogDownload]),
+        builder: (context, AsyncSnapshot snapshot) {
+          if (snapshot.connectionState ==
+              ConnectionState.waiting) {
+            return Center(
+                child: Lottie.asset(
+                  "images/load1.json",
+                ));
+          }
+          else if (snapshot.data == null) {
+            return TryAgainButton(
+              onPressed: () {
+                setState(() {});
+              },
+            );
+          } else {
+            if (snapshot.data!.isEmpty) {
+              return Column(
+                children: const [
+                  Text(
+                    "No Data Found",
+                    style: TextStyle(
+                        fontSize: 17, fontStyle: FontStyle.italic),
+                  )
+                ],
+              );
+            } else {
+              listProduct=snapshot.data![0];
+              return Column(children:[
+                const Padding(padding: EdgeInsets.all(5)),
+                Row(
+                  children: [
+                    Expanded(child: TextField(decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),borderSide: const BorderSide(color:Colors.white)
+                      ),filled: true,
+                      fillColor: Colors.blue.shade100,
+                      hintStyle: const TextStyle(
+                          color:Colors.black
+                      ),labelText: "Category",
+                      prefixIcon: const Icon(Icons.list,color: Color(0x0ff3288BA),),
+                      suffixIcon: const Icon(Icons.arrow_forward_ios_sharp ,color: Color(0x0ff3288BA),),
+
+                    ),
+
+                      onTap: (){
+                        bottomSheetShow(context,snapshot.data[1]);
+                      },
+                      readOnly: true,
+                    )
+                    ),
+                    const SizedBox(width: 5,height: 5,),
+
+                    Expanded(child: TextField(decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),borderSide: const BorderSide(color:Colors.white)
+                      ),filled: true,
+                      fillColor: Colors.blue.shade100,
+
+                      hintStyle: const TextStyle(
+                          color:Colors.black
+                      ),
+                      labelText: "SubCategory",
+                      prefixIcon: const Icon(Icons.list,color: Color(0xff3288ba),),
+                      suffixIcon: const Icon(Icons.arrow_forward_ios_sharp ,color: Colors.black,),
+                    ),
+
+                      onTap: (){
+                        bottomSheetsubShow(context,snapshot.data[2]);
+                      },
+                      readOnly: true,
+                    )
+                    ),
+
+                    const SizedBox(width: 10,),
+
+                  ],
+                ),
+                Row(children: [IconButton(onPressed:(){}, icon: const Icon(Icons.location_on,color:Color(0xff3288ba)) ),
+
+                  AutoSizeText(addr,style:const TextStyle(fontSize: 15,color:Colors.black,),maxLines: 2,)]),
+                Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: TextField(
+                      focusNode: focusNode1,
+                       // controller: _searchController,
+                        decoration: InputDecoration(
+                          hintText: 'Search...',hoverColor: Colors.blue,
+                       /*   suffixIcon: IconButton(
+                            icon: const Icon(Icons.clear,color: Color(0xff3288ba),),
+                            onPressed: () {
+                              isSearch=true;
+                              setState(()
+                                  {
+                                  });
+                              searchprodlist = searchprodlist!.toList();
+
+                            }
+                          ),*/
+                          prefixIcon: IconButton(
+                            icon: const Icon(Icons.search,color: Color(0xff3288ba),),
+                            onPressed: () {
+
+                            },
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                        onChanged: (keyword) {
+                            if(keyword.isEmpty){
+                              isSearch=false;
+                              setState(() {
+                              });
+                            }
+                            if(keyword.isNotEmpty){
+                              searchkeywrd=keyword;
+                              isSearch=true;
+                              setState(() {
+                              });
+                            }
+                            searchprodlist = listProduct!.where((product) => product.Product_Name.toString().toLowerCase().contains(keyword)).toList();
+                        })),
+               // AutoSizeText("$addr",style: const TextStyle(fontSize: 15,fontWeight:FontWeight.bold,color: Color(0xff3288ba))),
+
+                Expanded(child:ListView.builder(
+
+                  padding: const EdgeInsets.all(5),
+                  // shrinkWrap: true,
+                  //  physics: const BouncingScrollPhysics(),
+                  itemCount: snapshot.data![0].length ,
+                  itemBuilder: (BuildContext ctx, int index) {
+                    final product = snapshot.data
+                    ![0][index];
+                    return GestureDetector(
+                        onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    ListDetailScreen(
+                                        details: product)
+                            )),
+                        child:
+                        prodWidget(product: product,addr:addr));
+                  },
+                ))]);
+            }
+          }
+        });
+}
 void bottomSheetShow(BuildContext ctx,List<ListResponse> categ) {
   showModalBottomSheet(
       elevation: 10,
@@ -227,12 +312,13 @@ void bottomSheetShow(BuildContext ctx,List<ListResponse> categ) {
             itemBuilder: (context,index){
             return ListTile(
               onTap: () async{
-                catogDownload= ApiScreenHelper.getcatog(context);
+               // catogDownload= ApiScreenHelper.getcatog(context);
+                prodDownload=ApiScreenHelper.getProd(lat!, long!,categ[index].category_id,categ[index].category_id);
                 setState(() {});
                 Navigator.pop(context);
                 },
               leading: const Icon(Icons.shopping_bag_outlined),
-              title:Text(categ[index].category_name,style: TextStyle(fontSize: 20),) ,
+              title:Text(categ[index].category_name,style: const TextStyle(fontSize: 20),) ,
             );
             }
         ),
@@ -263,12 +349,13 @@ void bottomSheetShow(BuildContext ctx,List<ListResponse> categ) {
                 String catogname=categ[index].sub_category_id;
                 return ListTile(
                   onTap: () async{
-                    subCatogDownload= ApiScreenHelper.getProdbysubCateg(context,catogname);
+                  //  subCatogDownload= ApiScreenHelper.getProdbysubCateg(context,catogname);
+                    prodDownload=ApiScreenHelper.getProd(lat!, long!,categ[index].category_id,categ[index].sub_category_id);
                     setState(() {});
                     Navigator.pop(context);
                   },
                   leading: const Icon(Icons.shopping_bag_outlined),
-                  title:Text(categ[index].sub_category_name,style: TextStyle(fontSize: 20),) ,
+                  title:Text(categ[index].sub_category_name,style: const TextStyle(fontSize: 20),) ,
                 );
               }
           ),
